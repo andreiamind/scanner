@@ -1,0 +1,5 @@
+{
+  "name": "Scanner da Dor Oculta",
+  "description": "Identifique padrões iniciais de dor (Mecânica, Funcional ou Sistêmica) com base em 5 perguntas simples.",
+  "requestFramePermissions": []
+}
