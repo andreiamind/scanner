@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronRight, CheckCircle2, AlertCircle, Activity, ArrowRight, Instagram } from 'lucide-react';
 
-type Screen = 'start' | 'quiz' | 'result';
+type Screen = 'start' | 'quiz' | 'result' | 'next_steps';
 type Pattern = 'MECÂNICA' | 'FUNCIONAL' | 'SISTÊMICA';
 
 interface Question {
@@ -60,6 +60,42 @@ const QUESTIONS: Question[] = [
       { text: "Não", type: "MECÂNICA" },
       { text: "Um pouco", type: "FUNCIONAL" },
       { text: "Bastante", type: "SISTÊMICA" },
+    ],
+  },
+  {
+    id: 6,
+    text: "Você sente que sua dor 'migra' ou muda de lugar às vezes, ou ela está sempre exatamente no mesmo ponto?",
+    options: [
+      { text: "Sempre no mesmo ponto exato.", type: "MECÂNICA" },
+      { text: "Muda um pouco de lugar dependendo da posição que fico.", type: "FUNCIONAL" },
+      { text: "Parece que 'anda' pelo corpo ou muda de lado sem motivo claro.", type: "SISTÊMICA" },
+    ],
+  },
+  {
+    id: 7,
+    text: "Como sua dor se comporta logo ao acordar ou após passar muito tempo em repouso?",
+    options: [
+      { text: "Sinto uma pontada ou trava logo no primeiro movimento.", type: "MECÂNICA" },
+      { text: "O repouso ajuda, a dor só volta depois de um tempo em pé ou sentado.", type: "FUNCIONAL" },
+      { text: "Acordo já com dor ou me sinto rígido(a) e 'travado' o tempo todo.", type: "SISTÊMICA" },
+    ],
+  },
+  {
+    id: 8,
+    text: "Você percebe que sua dor costuma aparecer ou piorar em períodos de maior sobrecarga mental ou decisões importantes?",
+    options: [
+      { text: "Não vejo relação, a dor é puramente física.", type: "MECÂNICA" },
+      { text: "Sinto que fico mais tenso(a) e isso acaba gerando o incômodo.", type: "FUNCIONAL" },
+      { text: "Sim, minha dor explode ou fica muito mais sensível sob pressão.", type: "SISTÊMICA" },
+    ],
+  },
+  {
+    id: 9,
+    text: "Além da dor, você sente outros sinais frequentes, como cansaço que não passa com o sono, dores de cabeça ou má digestão?",
+    options: [
+      { text: "Não, sinto apenas a dor no local específico.", type: "MECÂNICA" },
+      { text: "Sinto cansaço muscular e peso no corpo no final do dia.", type: "FUNCIONAL" },
+      { text: "Sim, sinto vários desses sinais juntos com frequência.", type: "SISTÊMICA" },
     ],
   },
 ];
@@ -148,9 +184,14 @@ export default function App() {
                 <div className="inline-flex p-3 bg-emerald-100 rounded-2xl text-emerald-700 mb-2">
                   <Activity size={32} />
                 </div>
-                <h1 className="text-4xl font-bold tracking-tight text-stone-900 leading-tight">
-                  Scanner da <span className="text-emerald-600">Dor Oculta</span>
-                </h1>
+                <div className="space-y-2">
+                  <h1 className="text-4xl font-bold tracking-tight text-stone-900 leading-tight">
+                    Scanner da <span className="text-emerald-600">Dor Oculta</span>
+                  </h1>
+                  <p className="text-emerald-700 font-bold italic">
+                    “Você trata sua dor… mas ela sempre volta?”
+                  </p>
+                </div>
                 <p className="text-lg text-stone-600 font-medium">
                   Descubra em 3 minutos se sua dor pode ser mais do que uma simples lesão.
                 </p>
@@ -191,14 +232,14 @@ export default function App() {
             >
               <div className="mb-8">
                 <div className="flex justify-between items-end mb-2">
-                  <span className="text-sm font-bold text-emerald-600 uppercase tracking-wider">Pergunta {currentQuestion + 1} de 5</span>
-                  <span className="text-xs text-stone-400 font-mono">{Math.round(((currentQuestion + 1) / 5) * 100)}%</span>
+                  <span className="text-sm font-bold text-emerald-600 uppercase tracking-wider">Pergunta {currentQuestion + 1} de {QUESTIONS.length}</span>
+                  <span className="text-xs text-stone-400 font-mono">{Math.round(((currentQuestion + 1) / QUESTIONS.length) * 100)}%</span>
                 </div>
                 <div className="h-1.5 w-full bg-stone-200 rounded-full overflow-hidden">
                   <motion.div 
                     className="h-full bg-emerald-500"
                     initial={{ width: 0 }}
-                    animate={{ width: `${((currentQuestion + 1) / 5) * 100}%` }}
+                    animate={{ width: `${((currentQuestion + 1) / QUESTIONS.length) * 100}%` }}
                   />
                 </div>
               </div>
@@ -229,6 +270,7 @@ export default function App() {
               key="result"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, x: -20 }}
               className="flex-1 flex flex-col space-y-8 pb-12"
             >
               <div className="space-y-6">
@@ -250,10 +292,39 @@ export default function App() {
                   <div className="p-4 bg-stone-100 rounded-xl border-l-4 border-emerald-500 italic text-stone-600">
                     {RESULTS_CONTENT[resultPattern].curiosity}
                   </div>
-                  <p className="text-stone-700">
+                </div>
+              </div>
+
+              <div className="mt-auto">
+                <button
+                  onClick={() => setScreen('next_steps')}
+                  className="w-full py-4 px-6 bg-emerald-600 text-white rounded-2xl font-semibold text-lg hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 group shadow-lg shadow-emerald-100"
+                >
+                  Entender o próximo passo
+                  <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                </button>
+              </div>
+            </motion.div>
+          )}
+
+          {screen === 'next_steps' && (
+            <motion.div
+              key="next_steps"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex-1 flex flex-col space-y-8 pb-12"
+            >
+              <div className="space-y-6">
+                <div className="inline-flex p-3 bg-emerald-100 rounded-2xl text-emerald-700">
+                  <Activity size={24} />
+                </div>
+                
+                <div className="space-y-6 text-stone-700 leading-relaxed">
+                  <p className="text-lg">
                     <span className="font-bold">Um ponto fundamental:</span> na prática, esses três padrões (Mecânico, Funcional e Sistêmico) raramente aparecem isolados. Na maioria dos casos, eles se misturam em diferentes proporções. O segredo para um tratamento que realmente funciona é identificar exatamente o quanto cada um desses fatores está influenciando sua dor hoje para direcionar as ações exatas de alívio.
                   </p>
-                  <p className="text-sm text-stone-500 font-medium pt-4 border-t border-stone-200">
+                  
+                  <p className="text-stone-600 italic font-medium border-l-4 border-stone-300 pl-4">
                     “Esse resultado é apenas um indício inicial. Para entender o padrão real da sua dor ao longo do tempo, é necessário um mapeamento mais profundo.”
                   </p>
                 </div>
@@ -264,13 +335,10 @@ export default function App() {
                   <p className="font-medium leading-snug">
                     👉 Se quiser aprofundar e mapear sua dor com mais precisão, me chama no direct com a palavra <span className="font-bold underline">RADAR</span>.
                   </p>
-                  <a 
-                    href="#" 
-                    className="inline-flex items-center gap-2 text-sm font-bold bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full transition-colors"
-                  >
+                  <div className="flex items-center gap-2 text-sm font-bold bg-white/20 px-4 py-2 rounded-full w-fit">
                     <Instagram size={16} />
-                    @seuusuario
-                  </a>
+                    @andreia_osteopatia
+                  </div>
                 </div>
 
                 <button
