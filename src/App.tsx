@@ -89,15 +89,6 @@ const QUESTIONS: Question[] = [
       { text: "Sim, minha dor explode ou fica muito mais sensível sob pressão.", type: "SISTÊMICA" },
     ],
   },
-  {
-    id: 9,
-    text: "Além da dor, você sente outros sinais frequentes, como cansaço que não passa com o sono, dores de cabeça ou má digestão?",
-    options: [
-      { text: "Não, sinto apenas a dor no local específico.", type: "MECÂNICA" },
-      { text: "Sinto cansaço muscular e peso no corpo no final do dia.", type: "FUNCIONAL" },
-      { text: "Sim, sinto vários desses sinais juntos com frequência.", type: "SISTÊMICA" },
-    ],
-  },
 ];
 
 const RESULTS_CONTENT = {
